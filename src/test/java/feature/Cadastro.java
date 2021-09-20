@@ -1,56 +1,45 @@
 package feature;
 
 import driver.AppiumDriverConfig;
-import io.appium.java_client.MobileElement;
+import io.appium.java_client.AppiumDriver;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.NoSuchElementException;
+import pageObjects.CadastroPageObjects;
+import pageObjects.LoginPageObjects;
 
-import java.net.MalformedURLException;
 
 public class Cadastro {
 
     @Test
-    public void nao_deve_cadastrar_usuario_com_senhas_que_nao_conferem() throws MalformedURLException {
-        AppiumDriverConfig driver = new AppiumDriverConfig();
+    public void nao_deve_cadastrar_usuario_com_senhas_que_nao_conferem() {
+        AppiumDriver driver = AppiumDriverConfig.Instance().driver;
 
-        MobileElement botaoCadastro = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/login_botao_cadastrar_usuario");
-        botaoCadastro.click();
+        LoginPageObjects loginPage = new LoginPageObjects(driver);
+        loginPage.buscarElementos();
+        loginPage.irParaATelaDeCadastro();
 
-        MobileElement campoNome = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_nome");
-        campoNome.setValue("Sapphire");
+        CadastroPageObjects cadastroPage = new CadastroPageObjects(driver);
+        cadastroPage.buscarElementos();
+        cadastroPage.Cadastrar("Sapphire", "123", "456");
 
-        MobileElement campoSenha = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_senha");
-        campoSenha.setValue("123456");
+        Assert.assertEquals("Senhas não conferem", cadastroPage.MensagemErro());
 
-        MobileElement campoConfirmarSenha = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_confirmar_senha");
-        campoConfirmarSenha.setValue("543563");
-
-        MobileElement botaoCadastrar = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/cadastro_usuario_botao_cadastrar");
-        botaoCadastrar.click();
-
-        MobileElement mensagemErroCadastro = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/erro_cadastro");
-
-        Assert.assertEquals("Senhas não conferem", mensagemErroCadastro.getText());
+        driver.navigate().back();
 
     }
 
     @Test
-    public void posso_cadastrar_usuario_com_senhas_que_conferem() throws MalformedURLException {
-        AppiumDriverConfig driver = new AppiumDriverConfig();
+    public void posso_cadastrar_usuario_com_senhas_que_conferem() throws NoSuchElementException {
+        AppiumDriver driver = AppiumDriverConfig.Instance().driver;
 
-        MobileElement botaoCadastro = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/login_botao_cadastrar_usuario");
-        botaoCadastro.click();
+        LoginPageObjects loginPage = new LoginPageObjects(driver);
+        loginPage.buscarElementos();
+        loginPage.irParaATelaDeCadastro();
 
-        MobileElement campoNome = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_nome");
-        campoNome.setValue("Sapphire");
+        CadastroPageObjects cadastroPage = new CadastroPageObjects(driver);
+        cadastroPage.buscarElementos();
+        cadastroPage.Cadastrar("Sapphire", "123", "123");
 
-        MobileElement campoSenha = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_senha");
-        campoSenha.setValue("123456");
-
-        MobileElement campoConfirmarSenha = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/input_confirmar_senha");
-        campoConfirmarSenha.setValue("123456");
-
-        MobileElement botaoCadastrar = (MobileElement) driver.driver.findElementById("br.com.alura.aluraesporte:id/cadastro_usuario_botao_cadastrar");
-        botaoCadastrar.click();
     }
 }
